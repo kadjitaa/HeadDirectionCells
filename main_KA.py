@@ -88,7 +88,7 @@ figure()
 for i in spikes.keys():
     sz=(int(len(spikes.keys()))/4)+1
     ax2=subplot(sz,4,i+1, projection='polar')
-    plot(tuning_curves_1[i],label=str(i),color='r', linewidth=2)
+    plot(tc[i],label=str(i),color='r', linewidth=2)
     ax2.set_xticklabels([])
     legend()
 

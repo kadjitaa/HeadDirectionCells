@@ -76,6 +76,8 @@ data['x']=down_xpos
 data['y']=down_ypos
 data['err']=decoded_err
 
+
+#PLOT DECODING ERROR projected unto x,y
 fig = plt.figure()
 stats,_,_,_=scipy.stats.binned_statistic_2d(data['x'],data['y'], data['err'], statistic='max',bins=20)
 stats=gaussian_filter(stats,sigma=0.01)

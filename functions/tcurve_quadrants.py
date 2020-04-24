@@ -5,37 +5,54 @@ Created on Wed Apr 22 20:37:39 2020
 
 @author: Mac
 """
-
+##########################################################################
+#PARAMETERS
+##########################################################################
 #Define position as an array
-pos_x=array(position['x'].restrict(wake_ep_2)); pos_xt=array(position['x'].index.values)
-pos_y=array(position['z'].restrict(wake_ep_2)); pos_yt=array(position['x'].index.values)
+pos_x=array(position['x'].restrict(wake_ep_2))
+pos_y=array(position['z'].restrict(wake_ep_2))
 
 
-#you may have to manually define the center of your environment for data with irregular path plots
 x_cen=(pos_x.max()+pos_x.min())/2  
 y_cen=(pos_y.max()+pos_y.min())/2
-#c_vert=plot([x_cen,x_cen], [pos_y.min(),pos_y.max()]) #plots vertical line through center for verification
-#c_hor=plot([pos_x.min(),pos_x.max()],[y_cen,y_cen])   #plots horizontal line through center for verification
 
 
 #ZONES
+##############################################################################
 #upper left
+##############################################################################
 up_left=(x_cen>pos_x) & (y_cen<pos_y) #defining quadrant
 pos_ry_upleft=position['ry'].restrict(wake_ep_2)[up_left]
 
-#spk_pos_align=pos_ry_upleft.realign(spikes[1].restrict(wake_ep_2))
-#scatter(spk_pos_align.index.values, np.ones(len(spk_pos_align))*2.36,marker="|", c='g');plot(pos_ry_upleft)
+starts=[]
+ends=[]
+start=pos_ry_upleft.index[0]
+
+for i in range(len(pos_ry_upleft)-1):
+    t=pos_ry_upleft.index[i]
+    t1=pos_ry_upleft.index[i+1]
+    d=t1-t
+    if d>9000:
+        starts.append(start)
+        ends.append(t)
+        start=t1
+up_left_eps=pd.DataFrame(data=[starts,ends], index=['start','end']).T 
+## clean up to remove extremly small epochs
+for i in range(len(up_left_eps)):
+    if diff(up_left_eps.loc[i]) == 0:
+        up_left_eps=up_left_eps.drop([i])
+        
+ul_eps=nts.IntervalSet(start=up_left_eps['start'],end=up_left_eps['end'])
+
+tc_ul=computeAngularTuningCurves(spikes,position['ry'],ul_eps,60)
 
 
-ul_ep1=nts.IntervalSet(start=2470136649,end=2526800000)
-tuning_curves_2_ul=computeAngularTuningCurves(spikes,position['ry'],ul_ep1,60)
-
-
-figure()
+fig=figure()
+fig.suptitle('Average Tuning Curve for Session')
 for i in spikes.keys():
     sz=(int(len(spikes.keys()))/4)+1
     ax2=subplot(sz,4,i+1, projection='polar')
-    plot(tuning_curves_2[i],label=str(i),color='r', linewidth=2)
+    plot(tuning_curves_2[i],label=str(i),color='grey', linewidth=3.5)
     ax2.set_xticklabels([])
     legend()
 
@@ -45,56 +62,150 @@ fig.suptitle('ul')
 for i in spikes.keys():
     sz=(int(len(spikes.keys()))/4)+1
     ax2=subplot(sz,4,i+1, projection='polar')
-    plot(tuning_curves_2_ul[i],label=str(i),color='r', linewidth=2)
+    plot(tc_ul[i],label=str(i),color='r', linewidth=2)
     ax2.set_xticklabels([])
-    legend()
+    #legend()
 
 
+###################################################################################
 #upper right
+###################################################################################
 up_right=(x_cen<pos_x) & (y_cen<pos_y)
 pos_ry_upright=position['ry'].restrict(wake_ep_2)[up_right]
 
-ur_ep1=nts.IntervalSet(start=2.21651e+09, end=2.26297e+09)
-tuning_curves_2_ur=computeAngularTuningCurves(spikes,position['ry'],ur_ep1,60)
+starts=[]
+ends=[]
+start=pos_ry_upright.index[0]
+
+for i in range(len(pos_ry_upright)-1):
+    t=pos_ry_upright.index[i]
+    t1=pos_ry_upright.index[i+1]
+    d=t1-t
+    if d>9000:
+        starts.append(start)
+        ends.append(t)
+        start=t1
+up_right_eps=pd.DataFrame(data=[starts,ends], index=['start','end']).T 
+## clean up to remove extremly small epochs
+for i in range(len(up_right_eps)):
+    if diff(up_right_eps.loc[i]) == 0:
+        up_right_eps=up_right_eps.drop([i])
+        
+ur_eps=nts.IntervalSet(start=up_right_eps['start'],end=up_right_eps['end'])
+
+tc_ur=computeAngularTuningCurves(spikes,position['ry'],ur_eps,60)
+
 fig=figure()
 fig.suptitle('ur')
 for i in spikes.keys():
     sz=(int(len(spikes.keys()))/4)+1
     ax2=subplot(sz,4,i+1, projection='polar')
-    plot(tuning_curves_2_ur[i],label=str(i),color='r', linewidth=2)
+    plot(tc_ur[i],label=str(i),color='k', linewidth=2)
     ax2.set_xticklabels([])
-    legend()
+    #legend()
 
 
-
+###############################################################################
 #bottom left
+###############################################################################
 b_left=(x_cen>pos_x) & (y_cen>pos_y)
 pos_ry_bleft=position['ry'].restrict(wake_ep_2)[b_left]
-figure();scatter(pos_ry_bleft.index.values,pos_ry_bleft.values, alpha=0.5)
-bl_ep1=nts.IntervalSet(start=2.52671e+09, end=2.548e+09)
-tuning_curves_2_bl=computeAngularTuningCurves(spikes,position['ry'],bl_ep1,60)
+
+starts=[]
+ends=[]
+start=pos_ry_bleft.index[0]
+
+for i in range(len(pos_ry_bleft)-1):
+    t=pos_ry_bleft.index[i]
+    t1=pos_ry_bleft.index[i+1]
+    d=t1-t
+    if d>9000:
+        starts.append(start)
+        ends.append(t)
+        start=t1
+b_left_eps=pd.DataFrame(data=[starts,ends], index=['start','end']).T 
+## clean up to remove extremly small epochs
+for i in range(len(b_left_eps)):
+    if diff(b_left_eps.loc[i]) == 0:
+        b_left_eps=b_left_eps.drop([i])
+        
+bl_eps=nts.IntervalSet(start=b_left_eps['start'],end=b_left_eps['end'])
+
+tc_bl=computeAngularTuningCurves(spikes,position['ry'],bl_eps,60)
+
 fig=figure()
 fig.suptitle('bl')
 for i in spikes.keys():
     sz=(int(len(spikes.keys()))/4)+1
     ax2=subplot(sz,4,i+1, projection='polar')
-    plot(tuning_curves_2_bl[i],label=str(i),color='r', linewidth=2)
+    plot(tc_bl[i],label=str(i),color='magenta', linewidth=2)
     ax2.set_xticklabels([])
-    legend()
+    #legend()
 
 
 
-
+################################################################################
 # bottom_right
+################################################################################
 b_right=(x_cen<pos_x) & (y_cen>pos_y)
 pos_ry_bright=position['ry'].restrict(wake_ep_2)[b_right]
-br_ep1=nts.IntervalSet(start=2.5275e+09, end=2.54789e+09)
-tuning_curves_2_bl=computeAngularTuningCurves(spikes,position['ry'],br_ep1,60)
+
+starts=[]
+ends=[]
+start=pos_ry_bright.index[0]
+
+for i in range(len(pos_ry_bright)-1):
+    t=pos_ry_bright.index[i]
+    t1=pos_ry_bright.index[i+1]
+    d=t1-t
+    if d>9000:
+        starts.append(start)
+        ends.append(t)
+        start=t1
+b_right_eps=pd.DataFrame(data=[starts,ends], index=['start','end']).T 
+## clean up to remove extremly small epochs
+for i in range(len(b_right_eps)):
+    if diff(b_right_eps.loc[i]) == 0:
+        b_right_eps=b_right_eps.drop([i])
+        
+br_eps=nts.IntervalSet(start=b_right_eps['start'],end=b_right_eps['end'])
+
+tc_br=computeAngularTuningCurves(spikes,position['ry'],br_eps,60)
+
+
 fig=figure()
 fig.suptitle('br')
 for i in spikes.keys():
     sz=(int(len(spikes.keys()))/4)+1
     ax2=subplot(sz,4,i+1, projection='polar')
-    plot(tuning_curves_2_bl[i],label=str(i),color='r', linewidth=2)
+    plot(tc_br[i],label=str(i),color='blue', linewidth=2)
     ax2.set_xticklabels([])
-    legend()
+    #legend()
+###################################################################################    
+    
+
+
+
+
+
+################################################################################
+###PATH PLOTS FOR EACH QUADRANT
+################################################################################
+
+
+figure()
+for i in range(len(ul_eps)):
+    ep_t=nts.IntervalSet(start=ul_eps.loc[i,'start'], end=ul_eps.loc[i,'end'])
+    plot(position['x'].restrict(ep_t),position['z'].restrict(ep_t),c='r')
+
+for i in range(len(ur_eps)):
+    ep_t=nts.IntervalSet(start=ur_eps.loc[i,'start'], end=ur_eps.loc[i,'end'])
+    plot(position['x'].restrict(ep_t),position['z'].restrict(ep_t),c='k')
+
+for i in range(len(bl_eps)):
+    ep_t=nts.IntervalSet(start=bl_eps.loc[i,'start'], end=bl_eps.loc[i,'end'])
+    plot(position['x'].restrict(ep_t),position['z'].restrict(ep_t),c='magenta')
+    
+for i in range(len(br_eps)):
+    ep_t=nts.IntervalSet(start=br_eps.loc[i,'start'], end=br_eps.loc[i,'end'])
+    plot(position['x'].restrict(ep_t),position['z'].restrict(ep_t),c='blue')
