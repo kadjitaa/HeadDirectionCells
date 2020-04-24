@@ -19,6 +19,7 @@ def occu_heatmp(ep,position,_bins=50, threshold=0.13):
     cbar=fig.colorbar(q,orientation='vertical')
     cticks=cbar.ax.get_xticks()
     cbar.set_ticks([])
+    ax.invert_yaxis()
     #cbar.set_ticklabels(['min','max'])
     #cbar.ax.set_xlabel('occu')
     ax.axis('off')

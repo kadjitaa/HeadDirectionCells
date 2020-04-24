@@ -76,20 +76,32 @@ data['x']=down_xpos
 data['y']=down_ypos
 data['err']=decoded_err
 
+fig = plt.figure()
+stats,_,_,_=scipy.stats.binned_statistic_2d(data['x'],data['y'], data['err'], statistic='max',bins=20)
+stats=gaussian_filter(stats,sigma=0.01)
+q=imshow(np.rot90(stats),cmap='jet',interpolation = 'bilinear')
+gca().set_yticks([])
+gca().set_xticks([])
+gca().set_ylabel('position Y')
+gca().set_xlabel('position X')
+remove_box()
+cbar=fig.colorbar(q,orientation='vertical')
+cbar.ax.set_ylabel('decoding error (rad)')
 
 
 
 
-#PLOTTING
 
 fig = plt.figure()
+
+#PLOTTING 3D
 ax = fig.add_subplot(111, projection='3d')
 X=data['x'].values
 Y=data['y'].values
 Z=data['err'].values
 
-threshold=all_decoded['err'].values.max() *0.90
-for i,x in enumerate(all_decoded['err']):
+threshold=data['err'].values.max() *0.90
+for i,x in enumerate(data['err']):
     v=x**4
     if x > threshold:
         ax.scatter(X[i],Y[i],Z[i], s=v,c='darkmagenta',alpha=0.5)
