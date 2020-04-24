@@ -18,8 +18,8 @@ from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 
 
 #Define Training Data & Epoch
-tcurv= tuning_curves_3 # tcurves for training decoder
-Epoch= wake_ep_2#wake_ep_2_ka30 #epoch to be decoded
+tcurv= tc_train # tcurves for training decoder
+Epoch= ep2#wake_ep_2_ka30 #epoch to be decoded
 
 decoded_pos,ang=decodeHD(tcurv,spikes, Epoch) #run decoder
 
@@ -79,14 +79,14 @@ data['err']=decoded_err
 
 #PLOT DECODING ERROR projected unto x,y
 fig = plt.figure()
-stats,_,_,_=scipy.stats.binned_statistic_2d(data['x'],data['y'], data['err'], statistic='max',bins=20)
+stats,_,_,_=scipy.stats.binned_statistic_2d(data['x'],data['y'], data['err'], statistic='max',bins=15)
 stats=gaussian_filter(stats,sigma=0.01)
 q=imshow(np.rot90(stats),cmap='jet',interpolation = 'bilinear')
 gca().set_yticks([])
 gca().set_xticks([])
 gca().set_ylabel('position Y')
 gca().set_xlabel('position X')
-remove_box()
+#remove_box()
 cbar=fig.colorbar(q,orientation='vertical')
 cbar.ax.set_ylabel('decoding error (rad)')
 

@@ -9,6 +9,9 @@ Created on Wed Apr 22 20:37:39 2020
 #PARAMETERS
 ##########################################################################
 #Define position as an array
+
+wake_ep_2=ep2
+tuning_curves_2=tcurv_2
 pos_x=array(position['x'].restrict(wake_ep_2))
 pos_y=array(position['z'].restrict(wake_ep_2))
 
@@ -180,7 +183,6 @@ for i in spikes.keys():
     ax2=subplot(sz,4,i+1, projection='polar')
     plot(tc_br[i],label=str(i),color='blue', linewidth=2)
     ax2.set_xticklabels([])
-<<<<<<< Updated upstream
     #legend()
 ###################################################################################    
     

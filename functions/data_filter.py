@@ -19,7 +19,7 @@ import _pickle as cPickle
 ###############################################################################
 ###Setting Directory and Params
 ###############################################################################
-data_directory   = r'C:\Users\kasum\Desktop'
+data_directory   = '/Users/Mac/Desktop/desktop/TrenholmGroup/Data'
 info             = pd.read_excel(os.path.join(data_directory,'experiments.xlsx')) #directory to file with all exp data info
 
 strain='rd1' #you can equally specify the mouse you want to look at
@@ -61,8 +61,9 @@ gcorr_envA=pd.DataFrame(columns=['EnvB'])
 ###############################################################################
 ###Data Processing
 ##############################################################################
+mx_dir='/Volumes/MyBook'
 for x,s in enumerate(idx2):
-    path=info.dir[s].replace('\\',"/")
+    path=mx_dir+info.dir[s].replace('\\',"/").split(':')[1]
   
     ############################################################################################### 
     # LOADING DATA
@@ -78,9 +79,15 @@ for x,s in enumerate(idx2):
     
     ep1=nts.IntervalSet(start=wake_ep.loc[int(events[0])-1,'start'], end =wake_ep.loc[int(events[0])-1,'start']+6e+8)
     ep2=nts.IntervalSet(start=wake_ep.loc[int(events[-1])-1,'start'], end =wake_ep.loc[int(events[-1])-1,'start']+6e+8)
+    ep_train=nts.IntervalSet(start=wake_ep.loc[int(events[-1])-1,'start'], end =wake_ep.loc[int(events[-1])-1,'start']+3e+8)
+   
         
     tcurv_1 = computeAngularTuningCurves(spikes,position['ry'],ep1,60)
     tcurv_2 = computeAngularTuningCurves(spikes,position['ry'],ep2,60)
+    tc_train= computeAngularTuningCurves(spikes,position['ry'],ep_train,60)
+
+    figure(); plot(position['x'].restrict(ep2), position['z'].restrict(ep2), label=str(s))
+    legend()
     
     
     stats=findHDCells(tcurv_2,ep2,spikes,position['ry'])
@@ -160,8 +167,8 @@ for i in spikes.keys():
     plot(tcurv_2[i],label=str(i))
     legend()
     
-figure(); plot(position['x'].restrict(ep2), position['z'].restrict(ep2))
-oc
+figure(); plot(position['x'].restrict(ep2), position['z'].restrict(ep2), label=str(s))
+legend()
     
     
     
