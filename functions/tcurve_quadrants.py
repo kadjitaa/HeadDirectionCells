@@ -180,6 +180,7 @@ for i in spikes.keys():
     ax2=subplot(sz,4,i+1, projection='polar')
     plot(tc_br[i],label=str(i),color='blue', linewidth=2)
     ax2.set_xticklabels([])
+<<<<<<< Updated upstream
     #legend()
 ###################################################################################    
     

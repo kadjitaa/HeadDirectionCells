@@ -29,7 +29,7 @@ ep=ep1
 s=200 #bin_size
 
 mfold_mat, mfold_t=makeRingManifold(spikes,ep1,position['ry'],bin_size=s)
-mfold_mat=mfold_mat-[0.0113,0.03985]
+mfold_mat=mfold_mat-[0.0113,0.03985] #manual adjustment of manifold to make sure centere aligns with 0 on x axis and 0 on y axis
 mfold_t=pd.Series(mfold_t)
 
 ##############################################
@@ -85,7 +85,7 @@ plot(flip_ang, linewidth=1.5,color='r')
 
 ax3=subplot(313)
 plot(decoded_ang,color='r')
-
+'''
 def computeAngularVelocity(spikes, angle, ep, nb_bins = 20, bin_size = 100000):
     tmp             = pd.Series(index = angle.index.values, data = np.unwrap(angle.values))    
     tmp2             = tmp.rolling(window=100,win_type='gaussian',center=True,min_periods=1).mean(std=30.0)        
@@ -103,7 +103,7 @@ embedding = umap.UMAP(n_neighbors=5,
                       metric='correlation').fit_transform(mfold_mat)
 
 plt.scatter(embedding[:, 0], embedding[:, 1], s=0.1, cmap='Spectral');
-
+'''
 
 
 
