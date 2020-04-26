@@ -621,7 +621,7 @@ def circular_stats(ep,spikes,position):
         circ_stats.loc[i,'circ_mean']=circmean(position['ry'].realign(spikes[i].restrict(ep)))
         circ_stats.loc[i,'circ_var']=circvar(position['ry'].realign(spikes[i].restrict(ep)))
     return circ_stats
-
+#astropy.stats.circstats.vonmisesmle--modify to include kappa!
 
 def computeCircularStats(epochs,spikes,position, names):
     circ_mean=pd.DataFrame(index=spikes.keys(), columns=names)
@@ -638,7 +638,8 @@ def stability(ep,spikes,position):
     dur= diff(ep)/2
      #duration must be in microsecs
     ep=slidingWinEp(ep,dur)  
-     
+    '''TO DO
+    modify the line above to accept arrays with multiple eps'''
     r=pd.DataFrame(index=spikes.keys(), columns=['spatial_corr','pval_corr'])
     ep1=ep.loc[0]
     ep2=ep.loc[1]
@@ -850,6 +851,7 @@ def explore(eps, position):
         dx = x[1:]-x[:-1]
         dy = y[1:]-y[:-1]
         step_size = np.sqrt(dx**2+dy**2)
+        step_size=np.concatenate(([[0]],step_size)) #new modification
         #dist = np.concatenate(([0], np.cumsum(step_size)))
         dist=sum(step_size)
         tot_dist=dist*100
