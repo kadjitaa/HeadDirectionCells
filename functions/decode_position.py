@@ -18,8 +18,8 @@ from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 
 
 #Define Training Data & Epoch
-tcurv= tc_train # tcurves for training decoder
-Epoch= ep2#wake_ep_2_ka30 #epoch to be decoded
+tcurv= tcurv_train # tcurves for training decoder
+Epoch= ep2 #epoch to be decoded
 
 decoded_pos,ang=decodeHD(tcurv,spikes, Epoch) #run decoder
 
@@ -76,21 +76,31 @@ data['x']=down_xpos
 data['y']=down_ypos
 data['err']=decoded_err
 
-
+conditions=['min','max','mean','std']
 #PLOT DECODING ERROR projected unto x,y
-fig = plt.figure()
-stats,_,_,_=scipy.stats.binned_statistic_2d(data['x'],data['y'], data['err'], statistic='max',bins=15)
-stats=gaussian_filter(stats,sigma=0.01)
-q=imshow(np.rot90(stats),cmap='jet',interpolation = 'bilinear')
-gca().set_yticks([])
-gca().set_xticks([])
-gca().set_ylabel('position Y')
-gca().set_xlabel('position X')
-#remove_box()
-cbar=fig.colorbar(q,orientation='vertical')
-cbar.ax.set_ylabel('decoding error (rad)')
+#gs=GridSpec(1,4)
+for i,x in enumerate(conditions):
+    #subplot(gs[i])
+    fig = plt.figure(figsize=(2.9622,1.8748,))
+    stats,_,_,_=scipy.stats.binned_statistic_2d(data['x'],data['y'], data['err'], statistic=x,bins=30)
+    stats[np.isnan(stats)]=0
+    stats=gaussian_filter(stats,sigma=0.6)
+    q=imshow(np.rot90(stats),cmap='jet',interpolation = 'bilinear')
+    gca().set_yticks([])
+    gca().set_xticks([])
+    gca().set_ylabel('position Y')
+    gca().set_xlabel('position X')
+    #remove_box()
+    cbar=fig.colorbar(q,orientation='vertical')
+    #cbar.ax.tick_params(labelsize=12)
+    cbar.ax.set_ylabel('decoding error (rad)')
 
+    fig.suptitle('GNAT_'+x+' Decoding Error')
+    fig_dir='C:/Users/kasum/Dropbox/ADn_Project/decodingHeatmaps'
+    plt.savefig(fig_dir+'/GNAT'+x+'.svg',dpi=300, format='svg', bbox_inches="tight", pad_inches=0.05)
 
+    
+    
 
 
 

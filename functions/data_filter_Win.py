@@ -78,10 +78,11 @@ for x,s in enumerate(idx2):
     
     ep1=nts.IntervalSet(start=wake_ep.loc[int(events[0])-1,'start'], end =wake_ep.loc[int(events[0])-1,'start']+6e+8)
     ep2=nts.IntervalSet(start=wake_ep.loc[int(events[-1])-1,'start'], end =wake_ep.loc[int(events[-1])-1,'start']+6e+8)
+    ep3=nts.IntervalSet(start=wake_ep.loc[int(events[-1])-1,'start'], end =wake_ep.loc[int(events[-1])-1,'start']+3e+8)
         
     tcurv_1 = computeAngularTuningCurves(spikes,position['ry'],ep1,60)
     tcurv_2 = computeAngularTuningCurves(spikes,position['ry'],ep2,60)
-    
+    tcurv_train=computeAngularTuningCurves(spikes,position['ry'],ep3,60)
     
     stats=findHDCells(tcurv_2,ep2,spikes,position['ry'])
     hd_cells=stats['hd_cells']==True
@@ -111,8 +112,14 @@ gca().set_ylabel('Information (bits/spk)')
     
 scipy.stats.mannwhitneyu(hd_inf.values,place_inf.values)   
     
+figure()
+for i in spikes.keys():
+    rws=int(len(spikes.keys())/4)+1
+    ax=subplot(rws,4,i+1, projection='polar')
+    plot(tcurv_2[i],label=str(i))
+    legend()
     
-    
+figure(); plot(position['x'].restrict(ep1), position['z'].restrict(ep1))    
     
     
 corr_envA['blind']=gcorr_envA.values
@@ -153,14 +160,7 @@ for i,x in enumerate(range(5,9)):
 plt.savefig(r'C:\Users\kasum\Dropbox\ADn_Project\200321\rd1_day4iso_OSN.svg',dpi=900, format='svg', bbox_inches="tight", pad_inches=0.05)
 
     
-figure()
-for i in spikes.keys():
-    rws=int(len(spikes.keys())/4)+1
-    ax=subplot(rws,4,i+1, projection='polar')
-    plot(tcurv_2[i],label=str(i))
-    legend()
-    
-figure(); plot(position['x'].restrict(ep2), position['z'].restrict(ep2))
+
 oc
     
     
