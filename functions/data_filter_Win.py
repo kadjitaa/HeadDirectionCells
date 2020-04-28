@@ -22,10 +22,10 @@ import _pickle as cPickle
 data_directory   = r'C:\Users\kasum\Desktop'
 info             = pd.read_excel(os.path.join(data_directory,'experiments.xlsx')) #directory to file with all exp data info
 
-strain='rd1' #you can equally specify the mouse you want to look at
+strain='gnat' #you can equally specify the mouse you want to look at
 exp='standard'
-cond1='EnvA'
-cond2='EnvA'
+cond1='cueA_light'
+cond2='cueB_light'
 #cond3= info.floor_ang==90
 
 
@@ -119,7 +119,7 @@ for i in spikes.keys():
     plot(tcurv_2[i],label=str(i))
     legend()
     
-figure(); plot(position['x'].restrict(ep1), position['z'].restrict(ep1))    
+figure(); plot(position['x'].restrict(ep2), position['z'].restrict(ep2))    
     
     
 corr_envA['blind']=gcorr_envA.values

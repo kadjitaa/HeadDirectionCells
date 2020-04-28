@@ -4,15 +4,15 @@ Created on Thu Mar  5 14:21:26 2020
 
 @author: kasum
 """
-def frate_maps(spikes, position, ep):
-    GF, ext = computePlaceFields(spikes, position[['x', 'z']], ep, 70)
+def frate_maps(spikes, position, ep,_bins):
+    GF, ext = computePlaceFields(spikes, position[['x', 'z']], ep, _bins)
     fig,ax4 =subplots()
     #GF=GF.T
     #GF=GF.flip()
     sz=int(len(spikes.keys())/4)+1
     for i,k in enumerate(spikes.keys()):
        ax4=subplot(sz,4,i+1)
-       tmp = gaussian_filter(GF[k].values,sigma = 2)
+       tmp = gaussian_filter(GF[k].values,sigma = 1.5)
        #for i,v in enumerate(tmp):
            #for j,x in enumerate(tmp):    
                #if tmp[i][j] < 0:
