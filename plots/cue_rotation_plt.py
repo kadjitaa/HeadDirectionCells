@@ -29,16 +29,28 @@ all_files = glob.glob(os.path.join(data_files, "*.h5"))
 #################################################
 gnat=[3]
 rd=[7]
-wt=[13]
+wt=[18]
 angles=[180]
 loc=[1,2]
 
 fig,ax=subplots(figsize=(3.5,6))
-val=13
+val=7
 i=0
 for val,ang in zip(wt,angles):
-    a=np.unwrap(pd.read_hdf(all_files[val])['pfd'][0]['cueA_light'].values*(180/np.pi))
-    b=np.unwrap(pd.read_hdf(all_files[val])['pfd'][0]['cueB_light'].values*(180/np.pi))
+    a=array(pd.DataFrame(pd.read_hdf(all_files[val])['circMean'][0]['wallA']).astype('float'))#.values*(180/np.pi))
+    b=array(pd.DataFrame(pd.read_hdf(all_files[val])['circMean'][0]['wallB']).astype('float'))#.values*(180/np.pi))
+    
+    d=rad2deg(abs(np.arctan2(sin(b-a),cos(b-a))))
+    #d=delete(d,-3)
+    figure();sns.distplot(d,fit=norm,kde=False)
+    gca().set_xlim(0,360)
+    plot([180,180],[0,0.09],'--',c='r')
+    
+        a=array(pd.read_hdf(all_files[val])['circMean'][0]['cueA_light'].values.astype('float'))#.values*(180/np.pi))
+        a[0]
+ delete(d,-3)
+
+    
     r_diff=sort(ang-(abs(a-b)))
     gnat=ax.scatter(np.random.normal(i,0.08,len(r_diff)), r_diff, s=60,c='w', edgecolors='black')
 ax.legend([rd,gnat],['rd1','cg_blind'],loc='upper left',fontsize=11,markerscale=0.5)

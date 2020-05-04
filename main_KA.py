@@ -20,6 +20,7 @@ from astropy.visualization import hist
 import statsmodels.api as sm
 import matplotlib.patches as mpatches
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
+from scipy.stats import norm
 
 
 import seaborn as sns
@@ -178,6 +179,17 @@ np.save(os.path.join(dir, animal_id), tcurv)
 
 
 """
+
+avg=tuning_curves_2.values.mean()
+mins=tuning_curves_2.values.min()
+maxs=tuning_curves_2.values.max()
+stds=tuning_curves_2.values.std()
+
+norm_tc=pd.DataFrame(index=tuning_curves_2.index,columns=tuning_curves_2.columns)
+
+for i in spikes.keys():
+    for x,y in enumerate(tuning_curves_2.index):
+        norm_tc.iloc[x,i]=abs(tuning_curves_2.values[x][i]-avg)/stds
 
 
 

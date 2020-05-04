@@ -215,5 +215,3 @@ plot(x,y,c=col); plot(x2,y2,c=col); plot(x3,y3,c=col)
 stat,p=scipy.stats.mannwhitneyu(wt,zn)
 
 plt.text(1.2, 117.5, "P = 0.003", size=12)
-
-
