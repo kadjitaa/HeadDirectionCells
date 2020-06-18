@@ -29,41 +29,31 @@ from sklearn.metrics import mean_squared_error, r2_score
 ###############################################################
 # PARAMETERS
 ###############################################################
-data_directory=r'C:\Users\kasum\Desktop\190430\KA30-190430\KA30-190430'
+data_directory=r'F:\EphysData\Experiments\200617\KA60-200617\KA60-200617'
 
-episodes= ['wake','wake','wake''wake']#Modify this to suite the conditions you ave
-events=['0','1','2','3'] #ids into the csvs in chro
+episodes= ['sleep','wake','wake','wake']#Modify this to suite the conditions you ave
+events=['1','2','3'] #ids into the csvs in chro
 n_analogin_channels = 2
 channel_optitrack=1 #calls the second opened ch
 spikes,shank= loadSpikeData(data_directory) #shank tells the number of cells on each shank
 n_channels, fs, shank_to_channel = loadXML(data_directory)  #shank to channel 
 position= loadPosition(data_directory,events,episodes,n_analogin_channels,channel_optitrack)
 wake_ep=loadEpoch(data_directory,'wake',episodes)
-
+'''
 ###################################################################################
 # ANALYSIS
 ###################################################################################
 #Epochs
 wake_ep_1=nts.IntervalSet(start=wake_ep.loc[0,'start'], end =wake_ep.loc[0,'start']+6e+8)
 wake_ep_2=nts.IntervalSet(start=wake_ep.loc[3,'start'], end =wake_ep.loc[3,'start']+6e+8)
-
 wake_ep_3=nts.IntervalSet(start=wake_ep.loc[3,'start'], end =wake_ep.loc[3,'start']+3e+8)
-#wake_ep_4=nts.IntervalSet(start=wake_ep.loc[3,'start'], end =wake_ep.loc[3,'start']+6e8)
-#wake_ep_5=nts.IntervalSet(start=wake_ep.loc[4,'start'], end =wake_ep.loc[4,'end'])
-#wake_ep_6=nts.IntervalSet(start=wake_ep.loc[5,'start'], end =wake_ep.loc[5,'end'])
-#wake_ep_7=nts.IntervalSet(start=wake_ep.loc[6,'start'], end =wake_ep.loc[6,'end'])
 
 #Tuning Curves
 tuning_curves_1=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_1,60)
 tuning_curves_2=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_2,60)
 tuning_curves_3=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_3,60)
-#tuning_curves_4=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_4,60)
-#tuning_curves_5=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_5,60)
-#tuning_curves_6=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_6,60)
-#tuning_curves_7=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_7,60)
 
-sys.exit()
-
+'''
 ###############################################################
 # PLOTTING
 ###############################################################
@@ -79,7 +69,8 @@ for i in range(len(wake_ep)):
     for x in spikes.keys():
         subplot(sz,4,1+x, projection='polar')
         plot(tc[x])
-  
+sys.exit() 
+
 #HD Stats
 stats=findHDCells(tuning_curves_2,wake_ep_2,spikes,position['ry'])
 hd_cells=np.where(stats['hd_cells']==True)[0]
