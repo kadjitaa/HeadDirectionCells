@@ -29,10 +29,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 ###############################################################
 # PARAMETERS
 ###############################################################
-data_directory=r'F:\EphysData\Experiments\200617\KA60-200617\KA60-200617'
+data_directory=r'F:\EphysData\Experiments\200618\KA60-200618\KA60-200618'
 
-episodes= ['sleep','wake','wake','wake']#Modify this to suite the conditions you ave
-events=['1','2','3'] #ids into the csvs in chro
+episodes= ['wake','wake','wake']#Modify this to suite the conditions you ave
+events=['0','1','2'] #ids into the csvs in chro
 n_analogin_channels = 2
 channel_optitrack=1 #calls the second opened ch
 spikes,shank= loadSpikeData(data_directory) #shank tells the number of cells on each shank
@@ -45,7 +45,7 @@ wake_ep=loadEpoch(data_directory,'wake',episodes)
 ###################################################################################
 #Epochs
 wake_ep_1=nts.IntervalSet(start=wake_ep.loc[0,'start'], end =wake_ep.loc[0,'start']+6e+8)
-wake_ep_2=nts.IntervalSet(start=wake_ep.loc[3,'start'], end =wake_ep.loc[3,'start']+6e+8)
+wake_ep_2=nts.IntervalSet(start=wake_ep.loc[1,'start'], end =wake_ep.loc[1,'start']+6e+8)
 wake_ep_3=nts.IntervalSet(start=wake_ep.loc[3,'start'], end =wake_ep.loc[3,'start']+3e+8)
 
 #Tuning Curves
@@ -59,16 +59,19 @@ tuning_curves_3=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_3,60)
 ###############################################################
 
 #Path and Polar Plots
-path_plot(wake_ep,position)
-
+#path_plot(wake_ep,position)
+#figure()
 sz=(int(len(spikes.keys()))/4)+1
-for i in range(len(wake_ep)):
+for i in c:#range(len(wake_ep)):
     ep=nts.IntervalSet(start=wake_ep.loc[i,'start'], end=wake_ep.loc[i,'start']+6e8)
     tc=computeAngularTuningCurves(spikes,position['ry'],ep,60)
     figure()
     for x in spikes.keys():
         subplot(sz,4,1+x, projection='polar')
         plot(tc[x])
+        remove_polarAx(gca(),True)
+        gca().set_xticklabels([])
+plt.suptitle('KA60-200619_90deg Cue Rotation in Dark')
 sys.exit() 
 
 #HD Stats
