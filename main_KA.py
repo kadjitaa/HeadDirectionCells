@@ -60,18 +60,18 @@ tuning_curves_3=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_3,60)
 
 #Path and Polar Plots
 #path_plot(wake_ep,position)
-#figure()
+figure()
 sz=(int(len(spikes.keys()))/4)+1
 for i in c:#range(len(wake_ep)):
     ep=nts.IntervalSet(start=wake_ep.loc[i,'start'], end=wake_ep.loc[i,'start']+6e8)
     tc=computeAngularTuningCurves(spikes,position['ry'],ep,60)
-    figure()
+    #figure()
     for x in spikes.keys():
         subplot(sz,4,1+x, projection='polar')
         plot(tc[x])
         remove_polarAx(gca(),True)
         gca().set_xticklabels([])
-plt.suptitle('KA60-200619_90deg Cue Rotation in Dark')
+plt.suptitle('KA60-200618_Floor in Standard Position')
 sys.exit() 
 
 #HD Stats
