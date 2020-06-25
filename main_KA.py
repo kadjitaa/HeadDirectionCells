@@ -29,10 +29,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 ###############################################################
 # PARAMETERS
 ###############################################################
-data_directory=r'F:\EphysData\Experiments\200618\KA60-200618\KA60-200618'
+data_directory=r'F:\EphysData\Experiments\200625\KA60-200625\KA60-200625'
 
-episodes= ['wake','wake','wake']#Modify this to suite the conditions you ave
-events=['0','1','2'] #ids into the csvs in chro
+episodes= ['wake','wake']#Modify this to suite the conditions you ave
+events=['0','1'] #ids into the csvs in chro
 n_analogin_channels = 2
 channel_optitrack=1 #calls the second opened ch
 spikes,shank= loadSpikeData(data_directory) #shank tells the number of cells on each shank
@@ -60,18 +60,18 @@ tuning_curves_3=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_3,60)
 
 #Path and Polar Plots
 #path_plot(wake_ep,position)
-figure()
+#figure()
 sz=(int(len(spikes.keys()))/4)+1
-for i in c:#range(len(wake_ep)):
+for i in range(len(wake_ep)):
     ep=nts.IntervalSet(start=wake_ep.loc[i,'start'], end=wake_ep.loc[i,'start']+6e8)
     tc=computeAngularTuningCurves(spikes,position['ry'],ep,60)
-    #figure()
+    figure()
     for x in spikes.keys():
         subplot(sz,4,1+x, projection='polar')
         plot(tc[x])
         remove_polarAx(gca(),True)
         gca().set_xticklabels([])
-plt.suptitle('KA60-200618_Floor in Standard Position')
+plt.suptitle('KA60-200624_OSN_Day2_Square')
 sys.exit() 
 
 #HD Stats
