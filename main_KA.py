@@ -29,10 +29,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 ###############################################################
 # PARAMETERS
 ###############################################################
-data_directory=r'F:\EphysData\Experiments\200625\KA60-200625\KA60-200625'
+data_directory=r'F:\EphysData\Experiments\200626\KA60-200626\KA60-200626'
 
-episodes= ['wake','wake']#Modify this to suite the conditions you ave
-events=['0','1'] #ids into the csvs in chro
+episodes= ['sleep','wake','wake']#Modify this to suite the conditions you ave
+events=['1','2'] #ids into the csvs in chro
 n_analogin_channels = 2
 channel_optitrack=1 #calls the second opened ch
 spikes,shank= loadSpikeData(data_directory) #shank tells the number of cells on each shank
@@ -71,7 +71,7 @@ for i in range(len(wake_ep)):
         plot(tc[x])
         remove_polarAx(gca(),True)
         gca().set_xticklabels([])
-plt.suptitle('KA60-200624_OSN_Day2_Square')
+plt.suptitle('KA60-200626_OSN_Day4_Cylinder')
 sys.exit() 
 
 #HD Stats
