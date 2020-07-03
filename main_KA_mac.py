@@ -24,11 +24,11 @@ from sklearn.metrics import mean_squared_error, r2_score
 ###############################################################
 # PARAMETERS
 ###############################################################
-data_directory='/Users/Mac/Desktop/desktop/TrenholmGroup/Data/KA30/KA30-190430'
+data_directory='/Volumes/MyBook/EphysData/Experiments/200703/KA63-200703'
 
 
-episodes= ['wake','wake','wake''wake']#Modify this to suite the conditions you ave
-events=['0','1','2','3'] #ids into the csvs in chro
+episodes= ['wake','wake']#Modify this to suite the conditions you ave
+events=['0','1'] #ids into the csvs in chro
 n_analogin_channels = 2
 channel_optitrack=1 #calls the second opened ch
 spikes,shank= loadSpikeData(data_directory) #shank tells the number of cells on each shank
@@ -40,6 +40,8 @@ wake_ep=loadEpoch(data_directory,'wake',episodes)
 # ANALYSIS
 ###################################################################################
 #Epochs
+
+'''
 wake_ep_1=nts.IntervalSet(start=wake_ep.loc[0,'start'], end =wake_ep.loc[0,'start']+6e8)
 wake_ep_2=nts.IntervalSet(start=wake_ep.loc[3,'start'], end =wake_ep.loc[3,'start']+6e8)
 wake_ep_3=nts.IntervalSet(start=wake_ep.loc[3,'start'], end =wake_ep.loc[3,'start']+3e+8)
@@ -56,30 +58,32 @@ tuning_curves_3=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_3,60)
 #tuning_curves_5=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_5,60)
 #tuning_curves_6=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_6,60)
 #tuning_curves_7=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_7,60)
-
-sys.exit()
+'''
 ###############################################################
 # PLOTTING
 ###############################################################
 
 
-from astropy.units import Quantity
-import astropy
-astropy.stats.circstats.vonmisesmle(array(position['ry'].restrict(wake_ep_2).realign(spikes[1].restrict(wake_ep_2))))
+#from astropy.units import Quantity
+#import astropy
+#astropy.stats.circstats.vonmisesmle(array(position['ry'].restrict(wake_ep_2).realign(spikes[1].restrict(wake_ep_2))))
 
 
 #Path and Polar Plots
-path_plot(wake_ep,position)
+#path_plot(wake_ep,position)
 
 sz=(int(len(spikes.keys()))/4)+1
 for i in range(len(wake_ep)):
     ep=nts.IntervalSet(start=wake_ep.loc[i,'start'], end=wake_ep.loc[i,'start']+6e8)
     tc=computeAngularTuningCurves(spikes,position['ry'],ep,60)
-    figure()
+    #figure()
     for x in spikes.keys():
         subplot(sz,4,1+x, projection='polar')
         plot(tc[x])
+
+plt.suptitle('KA63-200703_90deg Floor Rotation')
   
+sys.exit()
 
 #HD Stats
 stats=findHDCells(tuning_curves_2,wake_ep_2,spikes,position['ry'])
