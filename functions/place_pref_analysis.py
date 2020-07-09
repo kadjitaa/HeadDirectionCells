@@ -215,3 +215,13 @@ plot(x,y,c=col); plot(x2,y2,c=col); plot(x3,y3,c=col)
 stat,p=scipy.stats.mannwhitneyu(wt,zn)
 
 plt.text(1.2, 117.5, "P = 0.003", size=12)
+
+#######EXTRA CODE##########
+'''
+filename='/KA49_200127_gnat_treated.csv'
+dirs=r'F:\EphysData\Experiments\TrackingVids\odor_tracking\csv_tracking'
+data=pd.read_csv(dirs+filename, index_col=False,sep=' ')
+figure()
+plot(data['X'],data['Y'])
+plt.title(filename)
+'''
