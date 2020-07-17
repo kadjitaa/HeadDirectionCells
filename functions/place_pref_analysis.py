@@ -218,10 +218,14 @@ plt.text(1.2, 117.5, "P = 0.003", size=12)
 
 #######EXTRA CODE##########
 '''
-filename='/KA49_200127_gnat_treated.csv'
+filename='/A2929-wt-treated.csv'
 dirs=r'F:\EphysData\Experiments\TrackingVids\odor_tracking\csv_tracking'
 data=pd.read_csv(dirs+filename, index_col=False,sep=' ')
-figure()
+#figure()
+subplot(211)
 plot(data['X'],data['Y'])
+gca().set_yticks([])
+gca().set_xticks([])
 plt.title(filename)
+scatter(data.iloc[0,0], data.iloc[0,1],s=90,c='r')
 '''
