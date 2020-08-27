@@ -443,15 +443,15 @@ def loadTTLPulse(file, n_channels, channel, fs = 20000):
     ttl = pd.Series(index = timestep[peaks], data = data[peaks])    
     return ttl
 
-def loadAuxiliary(path, fs = 20000):
+def loadAuxiliary(path, n_probe = 1, fs = 20000):
 	"""
 	Extract the acceleration from the auxiliary.dat for each epochs
-
+	Downsampled at 100 Hz
 	Args:
-	    path: string
-	    epochs_ids: list        
+		path: string
+		epochs_ids: list        
 	Return: 
-	    TsdArray
+		TsdArray
 	""" 	
 	if not os.path.exists(path):
 		print("The path "+path+" doesn't exist; Exiting ...")
@@ -461,6 +461,7 @@ def loadAuxiliary(path, fs = 20000):
 		store = pd.HDFStore(accel_file, 'r')
 		accel = store['acceleration'] 
 		store.close()
+		accel = nts.TsdFrame(t = accel.index.values*1e6, d = accel.values) 
 		return accel
 	else:
 		aux_files = np.sort([f for f in os.listdir(path) if 'auxiliary' in f])
@@ -476,25 +477,30 @@ def loadAuxiliary(path, fs = 20000):
 			startoffile = f.seek(0, 0)
 			endoffile 	= f.seek(0, 2)
 			bytes_size 	= 2
-			n_samples 	= int((endoffile-startoffile)/3/bytes_size)
+			n_samples 	= int((endoffile-startoffile)/(3*n_probe)/bytes_size)
 			duration 	= n_samples/fs		
 			f.close()
-			tmp 		= np.fromfile(open(new_path, 'rb'), np.uint16).reshape(n_samples,3)
+			tmp 		= np.fromfile(open(new_path, 'rb'), np.uint16).reshape(n_samples,3*n_probe)
 			accel.append(tmp)
 			sample_size.append(n_samples)
+			del tmp
 
 		accel = np.concatenate(accel)	
 		factor = 37.4e-6
 		# timestep = np.arange(0, len(accel))/fs
 		# accel = pd.DataFrame(index = timestep, data= accel*37.4e-6)
-		tmp = scipy.signal.resample_poly(accel*factor, 1, 16)
-		timestep = np.arange(0, len(tmp))/(fs/16)
+		tmp  = []
+		for i in range(accel.shape[1]):
+			tmp.append(scipy.signal.resample_poly(accel[:,i]*factor, 1, 100))
+		tmp = np.vstack(tmp).T
+		timestep = np.arange(0, len(tmp))/(fs/100)
 		tmp = pd.DataFrame(index = timestep, data = tmp)
 		accel_file = os.path.join(path, 'Analysis', 'Acceleration.h5')
 		store = pd.HDFStore(accel_file, 'w')
 		store['acceleration'] = tmp
 		store.close()
-		return tmp
+		accel = nts.TsdFrame(t = tmp.index.values*1e6, d = tmp.values) 
+		return accel
 
 def downsampleDatFile(path, n_channels = 32, fs = 20000):
 	"""
