@@ -433,7 +433,7 @@ def findHDCells(tuning_curves,ep,spikes,position):
     stat['hd_score']=rMean
     
     cond2 = pd.DataFrame(np.logical_and(stat['pval']<0.001,stat['z']>19))
-    cond3 = pd.DataFrame(rMean['hd_score']>=0.45)
+    cond3 = pd.DataFrame(rMean['hd_score']>=0.485)
     '''To Do
     Add cond 4 and set it to any value greater than 0.4'''
     #cond4=pd.DataFrame(stat['hd_info'])

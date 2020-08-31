@@ -24,17 +24,18 @@ from sklearn.metrics import mean_squared_error, r2_score
 ###############################################################
 # PARAMETERS
 ###############################################################
-data_directory='/Volumes/MyBook/EphysData/Experiments/200703/KA63-200703'
+data_directory=r'/Volumes/Sandy/KA72-200825'
 
 
-episodes= ['wake','wake']#Modify this to suite the conditions you ave
-events=['0','1'] #ids into the csvs in chro
+episodes= ['sleep','wake']#Modify this to suite the conditions you ave
+events=['1'] #ids into the csvs in chro
 n_analogin_channels = 2
 channel_optitrack=1 #calls the second opened ch
 spikes,shank= loadSpikeData(data_directory) #shank tells the number of cells on each shank
 n_channels, fs, shank_to_channel = loadXML(data_directory)  #shank to channel 
 position= loadPosition(data_directory,events,episodes,n_analogin_channels,channel_optitrack)
 wake_ep=loadEpoch(data_directory,'wake',episodes)
+sleep
 
 ###################################################################################
 # ANALYSIS
@@ -76,7 +77,7 @@ sz=(int(len(spikes.keys()))/4)+1
 for i in range(len(wake_ep)):
     ep=nts.IntervalSet(start=wake_ep.loc[i,'start'], end=wake_ep.loc[i,'start']+6e8)
     tc=computeAngularTuningCurves(spikes,position['ry'],ep,60)
-    #figure()
+    figure()
     for x in spikes.keys():
         subplot(sz,4,1+x, projection='polar')
         plot(tc[x])

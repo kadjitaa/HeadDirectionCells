@@ -1,26 +1,33 @@
 import matplotlib.pyplot as plt
 
-plt.figure()
 
+standard_ang=all_circMean.iloc[:,0]
 
-
-
-
-
-pfd2=rad2deg(all_pfd.iloc[:,1].astype('int64'))
+rot_ang=[]
 for rots in [45,90,180]:
     if rots ==cond3:
-        pfd2_expected=abs(rad2deg((all_pfd.iloc[:,0].astype('int64'))+3.14)) % 2*np.pi
+        for i in range(len(all_circMean)):
+            rot_ang.append((((abs(all_circMean.iloc[i,1]-all_circMean.iloc[i,0]))))-deg2rad(rots)+ (all_circMean.iloc[i,0]))
+            
+plt.figure()
+    
+plt.scatter(standard_ang,rot_ang, c='r')
 
-
-gca().set_ylabel('Observed PFD')
-gca().set_xlabel('Expected PFD')
-
-plt.scatter(pfd2,pfd2_expected, c='red')
 plt.title('Cue Card Rotation')
 
-gca().set_ylim([0,360])
-gca().set_xlim([0,360])
 
-gca().set_ylabel('Observed PFD')
-gca().set_xlabel('Expected PFD')
+gca().set_ylabel('Observed Mean PFD (rad)')
+gca().set_xlabel('Expected Mean PFD (rad)')
+
+gca().set_ylim(0,2*np.pi)
+gca().set_xlim(0,2*np.pi)
+
+
+
+plt.figure()
+hist(standard_ang,bins=5)
+
+new=all_circMean.iloc[:,1]-deg2rad(180)
+hist(new,bins=5,color='red')
+
+gca().set_xlim([-2*pi,2*pi])

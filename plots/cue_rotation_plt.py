@@ -34,7 +34,6 @@ angles=[180]
 loc=[1,2]
 
 fig,ax=subplots(figsize=(3.5,6))
-<<<<<<< HEAD
 val=7
 i=0
 for val,ang in zip(wt,angles):
@@ -46,7 +45,7 @@ for val,ang in zip(wt,angles):
     figure();sns.distplot(d,fit=norm,kde=False)
     gca().set_xlim(0,360)
     plot([180,180],[0,0.09],'--',c='r')
-=======
+
 val=19
 i=0
 for val,ang in zip(wt,angles):
@@ -58,7 +57,7 @@ for val,ang in zip(wt,angles):
     figure();sns.distplot(d,kde=True)
     gca().set_xlim(0,360)
     plot([90,90],[0,0.05],'--',c='r')
->>>>>>> master
+
     
         a=array(pd.read_hdf(all_files[val])['circMean'][0]['cueA_light'].values.astype('float'))#.values*(180/np.pi))
         a[0]
