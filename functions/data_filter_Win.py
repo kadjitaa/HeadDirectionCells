@@ -19,14 +19,14 @@ import _pickle as cPickle
 ###############################################################################
 ###Setting Directory and Params
 ###############################################################################
-data_directory   = r'C:\Users\kasum\Desktop'
-info             = pd.read_excel(os.path.join(data_directory,'experiments.xlsx')) #directory to file with all exp data info
+data_directory   = r'C:\Users\kasum\Dropbox\ADn_Project'
+info             = pd.read_excel(os.path.join(data_directory,'experimentsMASTER.xlsx')) #directory to file with all exp data info
 
-strain='gnat' #you can equally specify the mouse you want to look at
+strain='wt' #you can equally specify the mouse you want to look at
 exp='standard'
 cond1='cueA_light'
 cond2='cueB_light'
-#cond3= info.floor_ang==90
+cond3= 180
 
 
 #################################################################################
@@ -38,26 +38,28 @@ idx2=[] #index for all the rows that meet cond1 and 2
 for i in range(len(info)):
     if np.any(info.iloc[i,:].str.contains(exp)) and np.any(info.iloc[i,:].str.contains(strain)) : #and np.any(info.iloc[i,:].str.contains(cond1)):
         idx.append(i)
-        if np.any(info.iloc[i,:].str.contains(cond1)==True) or np.any(info.iloc[i,:].str.contains(cond2)):
+        if (np.any(info.iloc[i,:].str.contains(cond1)==True) and np.any(info.iloc[i,:].str.contains(cond2))) and info.cue_ang[i]==cond3:
             idx2.append(i)
+
+
 
 ##############################################################################
 ###Within Animal Analysis
 ################################################################################
 ###Combined Datasets      
-all_means=pd.DataFrame(columns=([cond1,cond2]))
+#all_means=pd.DataFrame(columns=([cond1,cond2]))
 all_peaks=pd.DataFrame(columns=([cond1,cond2]))
 all_pfd=pd.DataFrame(columns=([cond1,cond2]))
-all_info=pd.DataFrame(columns=([cond1,cond2]))
-all_vLength=pd.DataFrame(columns=([cond1,cond2]))
-all_stability=pd.DataFrame(columns=([cond1,cond2]))
-all_circMean=pd.DataFrame(columns=([cond1,cond2]))
-all_circVar=pd.DataFrame(columns=([cond1,cond2]))
+#all_info=pd.DataFrame(columns=([cond1,cond2]))
+#all_vLength=pd.DataFrame(columns=([cond1,cond2]))
+#all_stability=pd.DataFrame(columns=([cond1,cond2]))
+#all_circMean=pd.DataFrame(columns=([cond1,cond2]))
+#all_circVar=pd.DataFrame(columns=([cond1,cond2]))
 
-all_light_tc=[]
-all_dark_tc=[]
+#all_light_tc=[]
+#all_dark_tc=[]
 
-gcorr_envA=pd.DataFrame(columns=['EnvB'])
+#gcorr_envA=pd.DataFrame(columns=['EnvB'])
 ###############################################################################
 ###Data Processing
 ##############################################################################
@@ -78,14 +80,30 @@ for x,s in enumerate(idx2):
     
     ep1=nts.IntervalSet(start=wake_ep.loc[int(events[0])-1,'start'], end =wake_ep.loc[int(events[0])-1,'start']+6e+8)
     ep2=nts.IntervalSet(start=wake_ep.loc[int(events[-1])-1,'start'], end =wake_ep.loc[int(events[-1])-1,'start']+6e+8)
-    ep3=nts.IntervalSet(start=wake_ep.loc[int(events[-1])-1,'start'], end =wake_ep.loc[int(events[-1])-1,'start']+3e+8)
+    #ep3=nts.IntervalSet(start=wake_ep.loc[int(events[-1])-1,'start'], end =wake_ep.loc[int(events[-1])-1,'start']+3e+8)
         
     tcurv_1 = computeAngularTuningCurves(spikes,position['ry'],ep1,60)
     tcurv_2 = computeAngularTuningCurves(spikes,position['ry'],ep2,60)
-    tcurv_train=computeAngularTuningCurves(spikes,position['ry'],ep3,60)
+    #tcurv_train=computeAngularTuningCurves(spikes,position['ry'],ep3,60)
     
     stats=findHDCells(tcurv_2,ep2,spikes,position['ry'])
     hd_cells=stats['hd_cells']==True
+    
+    mean_frate,peak_frate, pfd  = computeFiringRates(spikes,[ep1, ep2],[cond1,cond2],[tcurv_1,tcurv_2]) 
+    all_pfd=all_pfd.append(pfd[hd_cells]) 
+                       #Preferred Firing Dir
+
+    #Temp Code
+    plt.figure()
+    for i,x in enumerate(list(np.where(hd_cells==True)[0])):#spikes.keys():
+        subplot(5,6,i+1, projection='polar')
+        plot(tcurv_1[x])
+        plot(tcurv_2[x])
+        remove_polarAx(gca())
+    
+    sys.exit()
+
+    
     
     sw=slidingWinEp(ep2,diff(ep2)//2)
     

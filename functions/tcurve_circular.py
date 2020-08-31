@@ -20,7 +20,7 @@ exp,dist=explore(ep,position)
 
 r=np.sqrt((pos['x']-x_cen)**2+(pos['z']-y_cen)**2) #len of the radius at all points
 cyl_r= r.max() #the radius of the area explored                   meters 56.2cm--cylinder size
-cyl_c=cyl_r-cyl_r/2#0.10 2/3 of the cylinder 10cm from per
+cyl_c=cyl_r-cyl_r/2 #0.10 2/3 of the cylinder 10cm from per
 
 #####################################################################################
 #Center Time

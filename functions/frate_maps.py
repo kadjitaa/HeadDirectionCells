@@ -4,7 +4,8 @@ Created on Thu Mar  5 14:21:26 2020
 
 @author: kasum
 """
-def frate_maps(spikes, position, ep,_bins):
+from functions import *
+def frate_maps(spikes, position, ep,_bins=40):
     GF, ext = computePlaceFields(spikes, position[['x', 'z']], ep, _bins)
     fig,ax4 =subplots()
     #GF=GF.T

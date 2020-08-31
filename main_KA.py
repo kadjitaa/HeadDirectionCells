@@ -14,6 +14,7 @@ from pylab import *
 import os, sys
 from functions import *
 from pycircstat.tests import rayleigh
+
 import matplotlib.gridspec as gridspec
 import matplotlib.patches as mpatches
 from astropy.visualization import hist
@@ -29,10 +30,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 ###############################################################
 # PARAMETERS
 ###############################################################
-data_directory=r'F:\EphysData\Experiments\200627\KA60-200627\KA60-200627'
+data_directory=r'F:\EphysData\Experiments\200823\KA71-200823_sub\KA71-200823'
 
-episodes= ['wake','wake']#Modify this to suite the conditions you ave
-events=['0','1'] #ids into the csvs in chro
+episodes= ['sleep','wake','wake','wake']#Modify this to suite the conditions you ave
+events=['1','2','3'] #ids into the csvs in chro
 n_analogin_channels = 2
 channel_optitrack=1 #calls the second opened ch
 spikes,shank= loadSpikeData(data_directory) #shank tells the number of cells on each shank
@@ -44,9 +45,13 @@ wake_ep=loadEpoch(data_directory,'wake',episodes)
 # ANALYSIS
 ###################################################################################
 #Epochs
-wake_ep_1=nts.IntervalSet(start=wake_ep.loc[0,'start'], end =wake_ep.loc[0,'start']+6e+8)
-wake_ep_2=nts.IntervalSet(start=wake_ep.loc[1,'start'], end =wake_ep.loc[1,'start']+6e+8)
+wake_ep_1=nts.IntervalSet(start=wake_ep.loc[0,'start'], end =wake_ep.loc[0,'end'])
+wake_ep_2=nts.IntervalSet(start=wake_ep.loc[1,'start'], end =wake_ep.loc[1,'end'])
+<<<<<<< Updated upstream
 wake_ep_3=nts.IntervalSet(start=wake_ep.loc[3,'start'], end =wake_ep.loc[3,'start']+3e+8)
+=======
+wake_ep_3=nts.IntervalSet(start=wake_ep.loc[2,'start'], end =wake_ep.loc[2,'end'])
+>>>>>>> Stashed changes
 
 #Tuning Curves
 tuning_curves_1=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_1,60)
@@ -59,11 +64,11 @@ tuning_curves_3=computeAngularTuningCurves(spikes,position ['ry'],wake_ep_3,60)
 ###############################################################
 
 #Path and Polar Plots
+
 #path_plot(wake_ep,position)
-#figure()
 sz=(int(len(spikes.keys()))/4)+1
 for i in range(len(wake_ep)):
-    ep=nts.IntervalSet(start=wake_ep.loc[i,'start'], end=wake_ep.loc[i,'start']+6e+8)
+    ep=nts.IntervalSet(start=wake_ep.loc[i,'start'], end=wake_ep.loc[i,'end'])
     tc=computeAngularTuningCurves(spikes,position['ry'],ep,60)
     figure()
     for x in spikes.keys():
@@ -71,27 +76,26 @@ for i in range(len(wake_ep)):
         plot(tc[x])
         #remove_polarAx(gca(),True)
         gca().set_xticklabels([])
-plt.suptitle('KA60-200627_OSN_Day5_Cylinder')
+
+#plt.suptitle('KA60-200618_Floor in Standard Position')
+
 sys.exit() 
 
 #HD Stats
-stats=findHDCells(tuning_curves_2,wake_ep_2,spikes,position['ry'])
+stats=findHDCells(tuning_curves_1,wake_ep_1,spikes,position['ry'])
 hd_cells=np.where(stats['hd_cells']==True)[0]
 
    
-figure()
-for i in spikes.keys():
-    sz=(int(len(spikes.keys()))/4)+1
-    ax2=subplot(sz,4,i+1, projection='polar')
-    plot(tc[i],label=str(i),color='r', linewidth=2)
-    ax2.set_xticklabels([])
-    legend()
+
 
 subplot(121, projection='polar')
 plot(tuning_curves_1[0])
 subplot(122, projection='polar')
 plot(tuning_curves_2[0])
 
+for i in spikes.keys():
+    subplot(4,4,i+1,projection='polar')
+    plot(tuning_curves_3[i])
 ##############################################################################
 gs = gridspec.GridSpec(2,2)
 
