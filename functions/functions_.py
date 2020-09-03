@@ -292,7 +292,7 @@ def hd_info(tcurve,ep,spikes,position):
         
 
 
-def findHDCells(tuning_curves,ep,spikes,position):
+def findHDCells(tuning_curves,ep,spikes,position, cut_off=0.48):
     """
         Peak firing rate larger than 1
         and Rayleigh test p<0.001 & z > 100
@@ -323,7 +323,7 @@ def findHDCells(tuning_curves,ep,spikes,position):
         
     stat['hd_score']=rMean
     
-    cond2 = pd.DataFrame(np.logical_and(stat['pval']<0.001,stat['z']>40))
+    cond2 = pd.DataFrame(np.logical_and(stat['pval']<0.001,stat['z']>= cut_off))
     cond3 = pd.DataFrame(rMean['hd_score']>=0.5)
     tokeep=(cond1[0]==True) & (cond2[0]==True) & (cond3['hd_score']==True)
     stat['hd_cells']=tokeep
