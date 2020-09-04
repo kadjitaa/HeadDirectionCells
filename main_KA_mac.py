@@ -24,11 +24,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 ###############################################################
 # PARAMETERS
 ###############################################################
-data_directory=r'/Volumes/Sandy/KA72-200825'
+data_directory=r'/Volumes/MyBook/EphysData/Experiments/200618/KA60-200618/KA60-200618'
 
-
-episodes= ['sleep','wake']#Modify this to suite the conditions you ave
-events=['1'] #ids into the csvs in chro
+episodes= ['wake','wake']#Modify this to suite the conditions you ave
+events=['0','1'] #ids into the csvs in chro
 n_analogin_channels = 2
 channel_optitrack=1 #calls the second opened ch
 spikes,shank= loadSpikeData(data_directory) #shank tells the number of cells on each shank
