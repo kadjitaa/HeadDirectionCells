@@ -81,39 +81,34 @@ for x,s in enumerate(idx2):
     hd_cells=stats['hd_cells']==True
     all_stats.append(stats)
     
-    circ_mean,_ = computeCircularStats([ep1,ep2],spikes,position['ry'],['cueA_light','cueB_light']) 
+    circ_mean,_ = computeCircularStats([ep1,ep2],spikes,position['ry'],['cueA_light','cueB_light'])     
     
-    cond3=info.floor_ang[s]
-
-    standard_ang=pd.DataFrame(circ_mean.iloc[:,0].values,columns=['observed'])
-
-    rot_ang=pd.DataFrame(index=np.arange(len(standard_ang)),columns=['predicted'])#                 (index=list(np.arange(len(standard_ang))),columns=['New'])
+    
+    cond3=info.rot_ang[s]
+    cond4=info.rot_dir[s]
+    standard_ang=pd.DataFrame(circ_mean.iloc[:,1].values,columns=['observed'])
+   
+    rot_ang=pd.DataFrame(index=np.arange(len(standard_ang)),columns=['predicted'])#    
+    
+    #### the if conditions in the for loop below seperates them based on the direction of the cue rotation (clocwise/anticlockwise)
     for i in range(len(circ_mean)):
-        rot_ang.iloc[i,0]=((((abs(circ_mean.iloc[i,1]-circ_mean.iloc[i,0]))))-deg2rad(cond3)+ (circ_mean.iloc[i,0]))
-    
-    plt.scatter(standard_ang,rot_ang,label=str(s))
-    legend()
-    '''
+        if cond4=='anti':
+            rot_ang.iloc[i,0]=(abs((circ_mean.iloc[i,1]+deg2rad(cond3))% (2*np.pi)))
+            standard_ang.iloc[i,0]=circ_mean.iloc[i,0]
+        else:
+            rot_ang.iloc[i,0]=(abs((circ_mean.iloc[i,0]+deg2rad(cond3))% (2*np.pi)))
+    #plt.figure(); plt.scatter(standard_ang[hd_cells],rot_ang[hd_cells],label=str(s));legend()
     all_standard=all_standard.append(standard_ang[hd_cells]) 
     all_rots=all_rots.append(rot_ang[hd_cells])
+    #plt.scatter(standard_ang[hd_cells],rot_ang[hd_cells],label=str(s));legend()
+   
 
-
-    
-    plt.figure()
-    for i,x in enumerate(list(np.where(hd_cells==True)[0])):#spikes.keys():
-        subplot(5,8,i+1, projection='polar')
-        plot(tcurv_1[x])
-        plot(tcurv_2[x])
-        remove_polarAx(gca())        
-    '''
-sys.exit()
 print('Total cell count:', len(all_standard))    
 ########SCATTER PLOT#######################
-plt.figure()
+plt.figure(figsize=(2.75,2.4))
 
-plt.scatter(all_standard,all_rots, c='k',s=10,zorder=3)
-
-plt.title('Cue Card Rotation')
+plt.scatter(all_standard,all_rots, c='k',alpha=0.5,s=10,zorder=3)
+plt.title('Floor Rotation')
 
 gca().set_ylabel('Observed Mean PFD (rad)')
 gca().set_xlabel('Predicted Mean PFD (rad)')
@@ -123,26 +118,28 @@ gca().set_xlim(0,2*np.pi)
 
 
 tcks=[0,pi,2*np.pi]
-
 plt.xticks(tcks)
 plt.yticks(tcks)
 gca().set_yticklabels([0,'\u03C0',str(2)+'\u03C0'])
 gca().set_xticklabels([0,'\u03C0',str(2)+'\u03C0'])
 remove_box()
 
-
-
 plt.plot([0,2*np.pi],[0,2*np.pi], 'r--')
  
 x=np.array(all_standard.values).reshape(-1).astype('float')
 y=np.array(all_rots.values).reshape(-1).astype('float')
 m, b = np.polyfit(x, y, 1)
-linfit=plt.plot(x, m*x + b,color='k',alpha=0.6, linewidth=2)
+#linfit=plt.plot(x, m*x + b,color='k',alpha=0.7, linewidth=2)
+
+plt.subplots_adjust(top=0.856,bottom=0.237,left=0.223,right=0.914,hspace=0.2,wspace=0.2)
+
+plt.text(1.0,0.12,'r= '+ str(f'{scipy.stats.spearmanr(x,y)[0]:.3f}'),size=10,fontweight=2)
+#plt.text(2.8,2, str(scipy.stats.pearsonr(x,y)[0]),size=10,)
 
 
-correlation_matrix = np.corrcoef(x, y)
-correlation_xy = correlation_matrix[0,1]
-r_squared = print(correlation_xy**2)
 
 
-plt.text(2.8,5,'R$\mathregular{^2}$='+str((f'{m:.3f}')), size=14,color='red')
+
+
+
+
