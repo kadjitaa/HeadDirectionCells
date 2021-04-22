@@ -1,1 +1,1 @@
-Major changes have been made to most of the scripts- i plan to clean them up here soon. But in the meantime if you want to use any fxn here, just shoot me an email and i'll be glad to share my updated code with you.
+Major changes have been made to most of the scripts- i plan to clean them up here soon. But in the meantime, if you want to use any fxn here just shoot me an email and i'll be glad to share my updated code with you.
